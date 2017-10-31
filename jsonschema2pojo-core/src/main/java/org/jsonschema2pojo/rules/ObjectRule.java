@@ -36,6 +36,7 @@ import com.sun.codemodel.JType;
 import com.sun.codemodel.JVar;
 
 import org.jsonschema2pojo.AnnotationStyle;
+import org.jsonschema2pojo.ContentResolver;
 import org.jsonschema2pojo.Schema;
 import org.jsonschema2pojo.exception.ClassAlreadyExistsException;
 import org.jsonschema2pojo.util.NameHelper;
@@ -43,6 +44,7 @@ import org.jsonschema2pojo.util.ParcelableHelper;
 import org.jsonschema2pojo.util.SerializableHelper;
 
 import java.lang.reflect.Modifier;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -103,6 +105,13 @@ public class ObjectRule implements Rule<JPackage, JType> {
         jclass._extends((JClass) superType);
 
         schema.setJavaTypeIfEmpty(jclass);
+
+        if (node.has("id") && node.get("id").asText().startsWith("urn:")) {
+            // store this node in a global repo
+            Schema thisSchema = new Schema(URI.create(node.get("id").asText()), node, null);
+            thisSchema.setJavaTypeIfEmpty(jclass);
+            ruleFactory.getSchemaStore().addToStore(thisSchema.getId(), schema);
+        }
 
         if (node.has("deserializationClassProperty")) {
             addJsonTypeInfoAnnotation(jclass, node);

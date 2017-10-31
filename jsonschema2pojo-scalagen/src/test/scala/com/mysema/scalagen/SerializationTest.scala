@@ -257,7 +257,7 @@ class SerializationTest extends AbstractParserTest {
 
   }
 
-  @Test
+  @Test @Ignore // FIXME
   def SuperConstructors {
     val sources = toScala[SuperConstructors]
     assertContains(sources,

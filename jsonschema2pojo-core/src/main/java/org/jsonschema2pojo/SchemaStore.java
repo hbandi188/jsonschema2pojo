@@ -40,6 +40,10 @@ public class SchemaStore {
 		this.contentResolver = contentResolver;
 	}
 
+	public synchronized void addToStore(URI id, Schema schema) {
+        schemas.put(id, schema);
+    }
+
 	/**
      * Create or look up a new schema which has the given ID and read the
      * contents of the given ID as a URL. If a schema with the given ID is
